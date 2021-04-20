@@ -1,0 +1,79 @@
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h4>Domain2 page</h4>
+      <span id="messageValue"></span>
+    </div>
+    <script>
+      const ACTION_TYPES = {
+        READ: 'READ',
+        WRITE: 'WRITE',
+        REMOVE: 'REMOVE',
+      };
+      window.addEventListener('message', (event) => {
+        const { type, key, value } = event.data;
+        let messageValue = document.getElementById('messageValue');
+
+        const cb = () =>
+          setTimeout(
+            () => alert('Callback function was successfully received and run'),
+            1000
+          );
+
+        switch (type) {
+          case ACTION_TYPES.READ:
+            const result = localStorage.getItem(key);
+            messageValue.innerHTML = result
+              ? `Request to read data by the key "${key}" has been performed`
+              : '';
+            event.source.postMessage(
+              {
+                type,
+                key,
+                value: result,
+                cb: encodeURI(cb.toString()),
+              },
+              '*'
+            );
+            break;
+          case ACTION_TYPES.WRITE:
+            localStorage.setItem(key, value);
+            messageValue.innerHTML = `Request to write data "${value}" by the key "${key}" has been performed`;
+            event.source.postMessage(
+              { type, key, value, cb: encodeURI(cb.toString()) },
+              '*'
+            );
+            break;
+          case ACTION_TYPES.REMOVE:
+            const infoToRemove = localStorage.getItem(key);
+            if (infoToRemove) {
+              localStorage.removeItem(key);
+              messageValue.innerHTML = `Request to remove data by the key "${key}" has been performed`;
+            } else {
+              messageValue.innerHTML = '';
+            }
+            event.source.postMessage(
+              {
+                type,
+                key,
+                value: infoToRemove,
+                cb: encodeURI(cb.toString()),
+              },
+              '*'
+            );
+            break;
+          default:
+            console.log(`Action of type ${type} is not supported`);
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Domain1 page</h2>
+      <div style="margin: 1rem 0">
+        <button
+          onclick="writeToDomain2(inputkey.value, inputvalue.value)"
+          style="margin-right: 0.5rem"
+        >
+          WRITE [key+value]
+        </button>
+        <button
+          onclick="readFromDomain2(inputkey.value)"
+          style="margin-right: 0.5rem"
+        >
+          READ [key]
+        </button>
+        <button onclick="removeInDomain2(inputkey.value)">REMOVE [key]</button>
+      </div>
+      <div style="margin: 1rem 0">
+        <span>Key: </span><input style="width: 5rem" id="inputkey" />
+        <span>Value: </span><input id="inputvalue" style="width: 14.7rem" />
+      </div>
+      <iframe
+        src="./domain2.html"
+        id="iframe"
+        width="400"
+        height="400"
+      ></iframe>
+    </div>
+    <script>
+      const ACTION_TYPES = {
+        READ: 'READ',
+        WRITE: 'WRITE',
+        REMOVE: 'REMOVE',
+      };
+      const myIframe = document.getElementById('iframe');
+
+      function writeToDomain2(writeKey, writeValue) {
+        if (writeKey.trim() && writeValue.trim()) {
+          myIframe.contentWindow.postMessage(
+            { type: ACTION_TYPES.WRITE, key: writeKey, value: writeValue },
+            '*'
+          );
+          clearInput();
+        } else {
+          alert('You should enter key and value');
+        }
+      }
+
+      function readFromDomain2(readKey) {
+        if (readKey.trim()) {
+          myIframe.contentWindow.postMessage(
+            { type: ACTION_TYPES.READ, key: readKey },
+            '*'
+          );
+          clearInput();
+        } else {
+          alert('You should enter the key');
+        }
+      }
+
+      function removeInDomain2(removeKey) {
+        if (removeKey.trim()) {
+          myIframe.contentWindow.postMessage(
+            { type: ACTION_TYPES.REMOVE, key: removeKey },
+            '*'
+          );
+          clearInput();
+        } else {
+          alert('You should enter the key');
+        }
+      }
+
+      function clearInput() {
+        const inputkey = document.getElementById('inputkey');
+        const inputvalue = document.getElementById('inputvalue');
+        inputkey.value = '';
+        inputvalue.value = '';
+      }
+
+      window.addEventListener('message', (event) => {
+        const { type, key, value, cb } = event.data;
+        switch (type) {
+          case ACTION_TYPES.READ:
+            if (value) {
+              console.log(
+                `Got message with information "${value}" (stored by the key "${key}").`
+              );
+              eval('(' + decodeURI(cb) + ')();');
+            } else {
+              console.log(`The key "${key}" is absent. Information not found.`);
+            }
+            break;
+          case ACTION_TYPES.WRITE:
+            console.log(
+              `Got message that information "${value}" was written by the key "${key}".`
+            );
+            eval('(' + decodeURI(cb) + ')();');
+            break;
+          case ACTION_TYPES.REMOVE:
+            if (value) {
+              console.log(
+                `Got message that information "${value}" and the key "${key}" were removed.`
+              );
+              eval('(' + decodeURI(cb) + ')();');
+            } else {
+              console.log(
+                `The key "${key}" is absent. Information to remove not found.`
+              );
+            }
+            break;
+          default:
+            console.log(`Action of type ${type} is not supported`);
+        }
+      });
+    </script>
+  </body>
+</html>

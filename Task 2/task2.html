@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Task-2</title>
+    <style>
+      div:not(.manufacturer) {
+        margin-bottom: 1rem;
+      }
+      option {
+        margin: 0.2rem 0;
+      }
+      select {
+        width: 3.8rem;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <span>Size</span>
+    <div class="sizeDiv" id="sizeDiv">
+      <input type="radio" id="sizeS" name="size" value="S" />
+      <label for="sizeS">S</label>
+      <input type="radio" id="sizeM" name="size" value="M" />
+      <label for="sizeM">M</label>
+      <input type="radio" id="sizeL" name="size" value="L" />
+      <label for="sizeL">L</label>
+    </div>
+    <span>Color</span>
+    <div class="color" id="colorDiv">
+      <label><input type="checkbox" value="1" />1</label>
+      <label><input type="checkbox" value="2" />2</label>
+      <label><input type="checkbox" value="3" />3</label>
+      <label><input type="checkbox" value="4" />4</label>
+      <label><input type="checkbox" value="5" />5</label>
+    </div>
+    <div class="manufacturer">
+      <span>Manufacturer</span>
+    </div>
+    <div style="margin-top: 0.2rem">
+      <select name="manufacturer" size="5" multiple>
+        <option value="aaa">aaa</option>
+        <option value="b&c">b&c</option>
+        <option value="ddd">ddd</option>
+        <option value="eee">eee</option>
+      </select>
+    </div>
+    <div>
+      <span>Sale</span>
+      <label><input type="checkbox" class="sale" value="1" />1</label>
+    </div>
+  </body>
+  <script type="text/javascript" src="task2.js"></script>
+</html>
